@@ -1,6 +1,6 @@
 ---
  - name: Update Repository Index (db_servers)
-   apt:
+   package:
      update_cache: yes
    changed_when: false
 
