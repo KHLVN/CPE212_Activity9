@@ -1,29 +1,6 @@
 ---
  - name: Update Repository Index (db_servers)
-   apt:
+   package:
      update_cache: yes
    changed_when: false
 
- - name: Install Prometheus (CentOS)
-   package:
-     name: golang-github-prometheus
-     state: latest
-   when: ansible_distribution == "CentOS"
-
- - name: Install Prometheus (Ubuntu)
-   apt:
-     name: prometheus
-     state: latest
-   when: ansible_distribution == "Ubuntu"
-
- - name: Create Folder /etc/prometheus if not exists
-   file:
-     path: /etc/prometheus
-     mode: 0755
-     state: directory
-
- - name: Create Prometheus configuration file
-   copy:
-     dest: /etc/prometheus/prometheus.yml
-     src: prometheus_config.yml
-     mode: 0644
