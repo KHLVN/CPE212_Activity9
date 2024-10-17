@@ -4,3 +4,45 @@
      update_cache: yes
    changed_when: false
 
+ - name: Open port 9090
+   ufw:
+     rule: allow
+     port: 9090
+     proto: tcp
+     state: enabled
+
+ - name: Install Prometheus (Ubuntu)
+   apt:
+     name: prometheus
+     state: latest
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Create prometheus.service file
+   copy:
+     dest: /etc/systemd/system/prometheus.service
+     content: |
+       [Unit]
+       Description=Prometheus
+       Wants=network-online.target
+       After=network-online.target
+
+       [Service]
+       User=root
+       Group=root
+       Type=simple
+       ExecStart=/usr/local/bin/prometheus \
+               --config.file /etc/prometheus/prometheus.yml \
+               --storage.tsdb.path /var/lib/prometheus \
+               --web.console.templates=/etc/prometheus/consoles \
+               --web.console.libraries=/etc/prometheus/console_libraries \
+
+       [Install]
+       WantedBy=multi-user.target
+
+ - name: Start Prometheus Service (Ubuntu)
+   systemd:
+     name: prometheus
+     enabled: yes
+     state: started
+   when: ansible_distribution == "Ubuntu"
+
