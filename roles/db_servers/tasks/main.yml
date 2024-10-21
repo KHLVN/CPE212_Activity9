@@ -4,17 +4,11 @@
      update_cache: yes
    changed_when: false
 
-# - name: Open port 9090
-#   ufw:
-#     rule: allow
-#     port: 9090
-#     proto: tcp
-#     state: enabled
-
- - name: Allow Prometheus for Firewall
-   firewalld:
-     port: 9090/tcp
-     permanent: yes
+ - name: Open port 9090
+   ufw:
+     rule: allow
+     port: '9090'
+     proto: tcp
      state: enabled
 
  - name: Install Prometheus (Ubuntu)
@@ -103,3 +97,10 @@
       enabled: yes
       state: started
    when: ansible_distribution == "CentOS"
+
+ - name: Start Prometheus Service (Ubuntu)
+   systemd:
+     name: prometheus
+     enabled: yes
+     state: started
+   when: ansible_distribution == "Ubuntu"
